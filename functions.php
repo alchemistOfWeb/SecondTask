@@ -21,7 +21,7 @@ function view(string $name)
 
 function redirect(string $name)
 {
-    header('Location: {$name}');
+    header("Location: {$name}");
 }
 
 function getRandomFileName(string $path = '/', string $ext = '')
@@ -31,37 +31,32 @@ function getRandomFileName(string $path = '/', string $ext = '')
         $file = "{$path}{$name}.{$ext}";
     } while ( file_exists($file) );
 
-    return $name;
-}
-
-function storeText($data, $ext, $dir)
-{
-    $filename = STORE_PATH . $dir . getRandomFileName('/store/texts/text_', 'csv');
-
-    file_put_contents($filename, $data);
-
-
-    // $handle_text = fopen('/store/text_' . getRandomFileName('/store/file_', 'csv'), 'w+');
-    // fputs($handle_text, $text);
-    // fclose($handle_text);
-}
-
-function storeFile($data, $ext, $dir)
-{
-    $filename = STORE_PATH . $dir . getRandomFileName('/store/files/file_', 'csv');
-    move_uploaded_file( $_FILES['userfile']['tmp_name'], $filename);
+    return $file;
 }
 
 function storeAsCsv($data, $dir)
 {
-    if ($dir[0] != '/') $dir = '/' . $dir;
-    // $dir = $dir[0] != '/' ? '/' . $dir : $dir;
+    if ( $dir[0] != '/' ) {
+        $dir = '/' . $dir;
+    }
+
+    $dirpath = STORE_PATH . $dir;
     
-    $filename = STORE_PATH . $dir . getRandomFileName(STORE_PATH . $dir, 'csv');
+    $filename = getRandomFileName($dirpath, 'csv');
+    
+    if ( !file_exists($dirpath) ) {
+        mkdir($dirpath, 0777, true);
+    }
 
-    $handle = fopen($filename, 'w+');
+    $handle = fopen($filename, 'w');
 
-    fputcsv($handle, $data);
+    if (!$handle) {
+        throw new Exception();
+    }
+
+    foreach ( $data as $item ) {
+        fputcsv($handle, $item);
+    }
 
     fclose($handle);
 }

@@ -1,3 +1,3 @@
 <?php
 
-define('STORE_PATH', '/store');
+define('STORE_PATH', 'store');

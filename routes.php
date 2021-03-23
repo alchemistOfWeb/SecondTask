@@ -7,14 +7,18 @@ Route::get('/form', function(){
 });
 
 Route::post('/form', function(){
-    $text = $_REQUEST['text'];
-    $file = $_FILES['file'];
-    dd($file);
-    // storeText($text, 'csv', 'texts/');
-    // storeFile($file, 'csv', 'files/');
+    if ( isset($_REQUEST['text']) && !empty($_REQUEST['text']) ) {
+        storeAsCsv( prepareForCsv($_REQUEST['text']), 'texts/' );
+    }
 
-    storeAsCsv(prepareForCsv($text), 'texts/');
-    storeAsCsv(prepareForCsv($file), 'files/');
+    if ( isset($_FILES['file']) 
+        && 
+        !empty($_FILES['file']) 
+        && 
+        $_FILES['file']['error'] == 0 ) 
+    {
+        storeAsCsv( prepareForCsv($_FILES['file']), 'files/' );
+    }
 
     return redirect('/form');
 });
@@ -27,15 +31,16 @@ function prepareForCsv($text)
 
     $word_nums = [];
 
+
     foreach ( $tmp[0] as $item ) {
-        $word_nums[$item] = $word_nums[$item] ? $word_nums[$item] + 1 : 1;
+        $word_nums[$item] = isset( $word_nums[$item] ) ? $word_nums[$item] + 1 : 1;
     }
 
-    // foreach ( $word_nums as $key => $val ) {
-    //     echo "{$key} : {$val}" . PHP_EOL; 
-    // }
+    foreach ( $word_nums as $key => $val ) {
+        $prepared_arr[] = array($key, $val);
+    }
 
-    $word_nums['num of words'] = $num_of_words;
+    $prepared_arr[] = array('num of words', $num_of_words);
 
-    return $word_nums;
+    return $prepared_arr;
 }

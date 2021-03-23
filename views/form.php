@@ -21,17 +21,25 @@
 <body>
 
     <div class="container">
-        <form style="max-width: 400px;" method="post" enctype="multipart/form-data">
+        <form style="max-width: 400px;" action="form" method="post" enctype="multipart/form-data">
 
             <div class="form-group">
                 <label for="text-input">some text</label>
-                <input type="text" class="form-control" id="text-input" aria-describedby="textHelp" placeholder="Enter some text">
+                <textarea
+                name="text"
+                
+                class="form-control" 
+                id="text-input" 
+                aria-describedby="textHelp" 
+                placeholder="Enter some text"
+                ></textarea>
+
                 <small id="textHelp" class="form-text text-muted">You can type some text here.</small>
             </div>
 
             <div class="form-group">
                 <label for="exampleFormControlFile">Example file input</label>
-                <input type="file" class="form-control-file" id="exampleFormControlFile">
+                <input name="file" type="file" class="form-control-file" id="exampleFormControlFile">
             </div>
             
             <button type="submit" class="btn btn-primary">Submit</button>
